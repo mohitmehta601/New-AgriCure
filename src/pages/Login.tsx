@@ -10,23 +10,9 @@ import { authService } from "@/services/authService";
 import { useLanguage } from "@/contexts/LanguageContext";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
-// Valid product IDs
-const VALID_PRODUCT_IDS = [
-  '8972345610',
-  '1029384756',
-  '5647382910',
-  '9081726354',
-  '6758493021',
-  '3141592653',
-  '7263549810',
-  '8391027465',
-  '4516273980',
-  '1234567890'
-];
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [productId, setProductId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -37,17 +23,6 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Validate product ID first
-      if (!VALID_PRODUCT_IDS.includes(productId.trim())) {
-        toast({
-          title: t('auth.loginFailed'),
-          description: "Invalid Product ID. Please enter a valid Product ID.",
-          variant: "destructive"
-        });
-        setIsLoading(false);
-        return;
-      }
-
       const { data, error } = await authService.signIn({ email, password });
       
       if (error) {
@@ -112,18 +87,6 @@ const Login = () => {
           </CardHeader>
           <CardContent className="px-4 md:px-6">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="productId" className="text-sm md:text-base">{t('auth.productId')}</Label>
-                <Input
-                  id="productId"
-                  type="text"
-                  placeholder="Enter your product ID"
-                  value={productId}
-                  onChange={(e) => setProductId(e.target.value)}
-                  required
-                  className="mt-1"
-                />
-              </div>
               <div>
                 <Label htmlFor="email" className="text-sm md:text-base">{t('auth.email')}</Label>
                 <Input
