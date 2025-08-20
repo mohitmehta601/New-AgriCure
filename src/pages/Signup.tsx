@@ -12,11 +12,11 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
+    productId: "",
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    product_key: ""
   });
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -45,28 +45,11 @@ const Signup = () => {
     setIsLoading(true);
 
     try {
-      const supabaseMod = await import("@/services/supabaseClient");
-      const supabase = supabaseMod.supabase;
-      const { data: productData, error: productError } = await supabase
-        .from('products')
-        .select('id')
-        .eq('id', formData.product_key)
-        .single();
-
-      if (productError || !productData) {
-        toast({
-          title: t('common.error'),
-          description: 'Invalid Product ID. Please enter a valid Product ID.',
-          variant: "destructive"
-        });
-        setIsLoading(false);
-        return;
-      }
-
       const { data, error } = await authService.signUp({
         email: formData.email,
         password: formData.password,
         fullName: formData.name,
+        productId: formData.productId,
       });
 
       if (error) {
@@ -130,13 +113,13 @@ const Signup = () => {
           <CardContent className="px-4 md:px-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <Label htmlFor="product_id" className="text-sm md:text-base">{t('auth.productId')}</Label>
+                <Label htmlFor="productId" className="text-sm md:text-base">{t('auth.productId')}</Label>
                 <Input
-                  id="product_id"
-                  name="product_key"
+                  id="productId"
+                  name="productId"
                   type="text"
                   placeholder="Enter your product ID"
-                  value={formData.product_key}
+                  value={formData.productId}
                   onChange={handleChange}
                   required
                   className="mt-1"
